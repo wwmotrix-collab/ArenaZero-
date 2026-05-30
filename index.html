@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#06060e" />
+  <title>Arena Zero</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <div class="atm"><div class="atm-grid"></div><div class="atm-glow1"></div><div class="atm-glow2"></div></div>
+
+    <section id="screen-login" class="screen">
+      <div class="brand-block">
+        <div class="brand-mark">AZ</div>
+        <div class="eyebrow">Motor Pindura adaptado</div>
+        <h1>Arena Zero</h1>
+        <p>Reserva vira convocação. Convocação vira partida. Partida vira XP.</p>
+      </div>
+
+      <div class="panel login-panel">
+        <div class="tab-switch">
+          <button class="tab-btn active" data-tab="arena">🏟️ Sou Arena</button>
+          <button class="tab-btn" data-tab="player">⚡ Sou Player</button>
+        </div>
+
+        <div id="tab-arena" class="tab-content">
+          <label>WhatsApp da arena</label>
+          <input id="arena-phone" type="tel" placeholder="(51) 99999-9999" inputmode="numeric" />
+          <label>Senha</label>
+          <input id="arena-password" type="password" placeholder="senha de acesso" />
+          <button class="btn primary" onclick="ArenaApp.loginArena()">Entrar no painel</button>
+          <button class="btn ghost" onclick="ArenaApp.showScreen('register-arena')">Criar arena</button>
+        </div>
+
+        <div id="tab-player" class="tab-content hidden">
+          <label>Código/link da partida</label>
+          <input id="player-token" type="text" placeholder="Cole o token ou abra o link recebido" />
+          <button class="btn primary" onclick="ArenaApp.openMatchFromToken()">Abrir convocação</button>
+          <p class="hint">O jogador normalmente entra pelo convite enviado no WhatsApp.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-register-arena" class="screen hidden">
+      <div class="topbar"><button onclick="ArenaApp.showScreen('login')">←</button><h2>Nova Arena</h2><span></span></div>
+      <div class="panel form-panel">
+        <label>Nome da arena</label><input id="reg-arena-name" placeholder="Arena São Paulo" />
+        <label>WhatsApp</label><input id="reg-arena-phone" type="tel" placeholder="(51) 99999-9999" inputmode="numeric" />
+        <label>Senha</label><input id="reg-arena-password" type="password" placeholder="mínimo 4 caracteres" />
+        <button class="btn primary" onclick="ArenaApp.registerArena()">Criar painel da arena</button>
+      </div>
+    </section>
+
+    <section id="screen-arena-dashboard" class="screen hidden">
+      <div class="dash-header">
+        <div><div class="eyebrow">Painel da Arena</div><h2 id="arena-name-display">Arena</h2><p id="arena-phone-display"></p></div>
+        <button class="icon-btn" onclick="ArenaApp.logout()">Sair</button>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><span>Partidas abertas</span><strong id="metric-open">0</strong></div>
+        <div class="metric"><span>Quadras</span><strong id="metric-courts">0</strong></div>
+        <div class="metric"><span>Esportes</span><strong id="metric-sports">0</strong></div>
+      </div>
+
+      <div class="quick-grid">
+        <button class="quick primary" onclick="ArenaApp.showCreateMatch()">➕ Criar partida</button>
+        <button class="quick" onclick="ArenaApp.showScreen('settings')">⚙️ Quadras e esportes</button>
+      </div>
+
+      <div class="section-title">Partidas/reservas</div>
+      <div id="matches-list" class="list"></div>
+    </section>
+
+    <section id="screen-settings" class="screen hidden">
+      <div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Configuração</h2><span></span></div>
+      <div class="panel form-panel">
+        <h3>Quadras</h3>
+        <div class="inline-form"><input id="court-name" placeholder="Quadra A" /><button onclick="ArenaApp.addCourt()">Adicionar</button></div>
+        <div id="courts-list" class="chip-list"></div>
+        <hr />
+        <h3>Esportes</h3>
+        <label>Nome</label><input id="sport-name" placeholder="Futebol 7" />
+        <div class="form-grid">
+          <div><label>Players/time</label><input id="sport-ppt" type="number" value="7" /></div>
+          <div><label>Times</label><input id="sport-teams" type="number" value="2" /></div>
+          <div><label>Reservas %</label><input id="sport-reserve" type="number" value="30" /></div>
+          <div><label>Duração min</label><input id="sport-duration" type="number" value="90" /></div>
+        </div>
+        <button class="btn primary" onclick="ArenaApp.addSport()">Adicionar esporte</button>
+        <div id="sports-list" class="chip-list vertical"></div>
+      </div>
+    </section>
+
+    <section id="screen-create-match" class="screen hidden">
+      <div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Nova partida</h2><span></span></div>
+      <div class="panel form-panel">
+        <p class="hint strong">Equivalente ao “lançar compra” do Pindura: a arena lança uma reserva paga e gera o convite para o capitão.</p>
+        <label>Capitão / responsável</label><input id="match-captain-name" placeholder="Nome do capitão" />
+        <label>WhatsApp do capitão</label><input id="match-captain-phone" type="tel" placeholder="(51) 99999-9999" />
+        <label>Data</label><input id="match-date" type="date" />
+        <label>Horário</label><input id="match-time" type="time" />
+        <label>Quadra</label><select id="match-court"></select>
+        <label>Esporte</label><select id="match-sport" onchange="ArenaApp.previewCapacity()"></select>
+        <div class="capacity-box" id="capacity-preview">Selecione esporte para calcular vagas.</div>
+        <button class="btn primary" onclick="ArenaApp.createMatch()">Criar reserva e gerar convite</button>
+      </div>
+    </section>
+
+    <section id="screen-invite" class="screen hidden">
+      <div class="hero invite-hero">
+        <div class="hero-badge"><span id="invite-status-dot"></span><b id="invite-status">Convocação aberta</b></div>
+        <div class="emblem">⚔️</div>
+        <h1 id="invite-sport">Partida</h1>
+        <p id="invite-arena">Arena</p>
+        <p id="invite-date">Data</p>
+      </div>
+      <div class="counter-card">
+        <span id="invite-count">0</span><small>/</small><b id="invite-required">0</b>
+        <p id="invite-lacking">jogadores confirmados</p>
+        <div class="bar"><div id="invite-progress"></div></div>
+      </div>
+      <div class="panel form-panel" id="join-panel">
+        <h3>Confirmar presença</h3>
+        <label>Seu nome de jogador</label><input id="join-name" placeholder="Como te chamam em campo" />
+        <label>WhatsApp</label><input id="join-phone" type="tel" placeholder="(51) 99999-9999" />
+        <button class="btn primary" onclick="ArenaApp.joinMatch()">Entrar na partida</button>
+      </div>
+      <div class="section-title">Escalação</div>
+      <div id="invite-roster" class="roster"></div>
+      <div class="share-card"><button class="btn ghost" onclick="ArenaApp.shareCurrentMatch()">📲 Compartilhar convocação</button></div>
+    </section>
+
+    <section id="screen-created" class="screen hidden">
+      <div class="success-card">
+        <div class="success-icon">✅</div>
+        <h1>Reserva criada</h1>
+        <p>Envie este convite para o capitão espalhar no WhatsApp.</p>
+        <textarea id="created-share-text" readonly></textarea>
+        <button class="btn primary" onclick="ArenaApp.shareCreatedMatch()">Abrir WhatsApp</button>
+        <button class="btn ghost" onclick="ArenaApp.showScreen('arena-dashboard')">Voltar ao painel</button>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
