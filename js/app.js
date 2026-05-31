@@ -1,4 +1,4 @@
-const STORE_KEY = 'arena-zero-v1';
+const STORE_KEY = 'arena-zero-v2';
 
 const $ = (id) => document.getElementById(id);
 
@@ -10,7 +10,7 @@ const defaultData = () => ({ arenas: [], matches: [], session: null });
 
 const load = () => {
   try {
-    return { ...defaultData(), ...(JSON.parse(localStorage.getItem(STORE_KEY)) || {}) };
+    return { ...defaultData(), ...(JSON.parse(localStorage.getItem(STORE_KEY)) || JSON.parse(localStorage.getItem('arena-zero-v1')) || {}) };
   } catch (_) {
     return defaultData();
   }
@@ -53,11 +53,39 @@ function inviteUrl(match) {
   return url.toString();
 }
 
-function shareText(match) {
+function mapUrl(arena, court) {
+  const query = encodeURIComponent(`${arena?.name || 'Arena'} ${court?.name || ''}`.trim());
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+function matchRefs(match) {
   const arena = state.arenas.find((item) => item.id === match.arenaId);
   const sport = arena?.sports?.find((item) => item.id === match.sportId);
   const court = arena?.courts?.find((item) => item.id === match.courtId);
-  return `⚔️ Convocação Arena Zero\n\n🏟️ ${arena?.name || 'Arena'}\n🎮 ${sport?.name || 'Partida'}\n📍 ${court?.name || 'Quadra'}\n📅 ${formatDate(match.date, match.time)}\n👤 Capitão: ${match.captainName || 'Responsável'}\n\nConfirme presença aqui:\n${inviteUrl(match)}`;
+  return { arena, sport, court };
+}
+
+function shareText(match) {
+  const { arena, sport, court } = matchRefs(match);
+  const confirmed = match.players?.length || 0;
+  return `⚔️ Convocação Arena Zerø
+
+━━━━━━━━━━━━━━━━━━━━
+
+🎮 ${sport?.name || 'Partida'}
+🏟️ ${arena?.name || 'Arena'}
+📍 ${court?.name || 'Quadra'}
+📅 ${formatDate(match.date, match.time)}
+👥 ${confirmed}/${match.required || 0} confirmados
+
+Entre e confirme presença:
+
+👉 ${inviteUrl(match)}
+
+📍 Acesse o mapa:
+${mapUrl(arena, court)}
+
+Arena Zerø — O lobby começa aqui`;
 }
 
 function whatsAppLink(text, phone = '') {
@@ -80,6 +108,27 @@ function showScreen(name) {
   if (name === 'settings') renderSettings();
   if (name === 'create-match') renderCreateMatch();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function normalizeMatch(match) {
+  if (!match) return;
+  if (!match.players) match.players = [];
+  if (!match.required) {
+    const { sport } = matchRefs(match);
+    match.required = requiredPlayers(sport);
+  }
+  const captainPhone = cleanPhone(match.captainPhone || '');
+  const hasCaptain = captainPhone && match.players.some((player) => cleanPhone(player.phone) === captainPhone);
+  if (captainPhone && match.captainName && !hasCaptain) {
+    match.players.unshift({
+      id: uid(),
+      name: match.captainName,
+      phone: captainPhone,
+      role: 'capitao',
+      joinedAt: match.createdAt || new Date().toISOString(),
+    });
+    save(state);
+  }
 }
 
 function registerArena() {
@@ -119,6 +168,7 @@ function renderDashboard() {
   $('arena-name-display').textContent = arena.name || 'Arena';
   $('arena-phone-display').textContent = arena.phone ? `WhatsApp: ${arena.phone}` : '';
   const matches = state.matches.filter((match) => match.arenaId === arena.id);
+  matches.forEach(normalizeMatch);
   $('metric-open').textContent = matches.length;
   $('metric-courts').textContent = arena.courts.length;
   $('metric-sports').textContent = arena.sports.length;
@@ -129,16 +179,16 @@ function renderDashboard() {
     return;
   }
   matches.slice().reverse().forEach((match) => {
-    const sport = arena.sports.find((item) => item.id === match.sportId);
-    const court = arena.courts.find((item) => item.id === match.courtId);
+    const { sport, court } = matchRefs(match);
     const card = document.createElement('div');
     card.className = 'match-card';
-    card.innerHTML = `<h4>${sport?.name || 'Partida'} · ${formatDate(match.date, match.time)}</h4><p>${court?.name || 'Quadra'} · ${match.players.length}/${match.required} confirmados · Capitão ${match.captainName || '-'}</p><div class="actions"><button data-open="${match.token}">Abrir convite</button><button data-share="${match.id}">WhatsApp</button></div>`;
+    card.innerHTML = `<h4>${sport?.name || 'Partida'} · ${formatDate(match.date, match.time)}</h4><p>${court?.name || 'Quadra'} · ${match.players.length}/${match.required} confirmados · Capitão ${match.captainName || '-'}</p><div class="actions"><button data-open="${match.token}">Abrir lobby</button><button data-share="${match.id}">WhatsApp</button></div>`;
     list.appendChild(card);
   });
   list.querySelectorAll('[data-open]').forEach((btn) => btn.onclick = () => openMatchFromToken(btn.dataset.open));
   list.querySelectorAll('[data-share]').forEach((btn) => btn.onclick = () => {
     const match = state.matches.find((item) => item.id === btn.dataset.share);
+    normalizeMatch(match);
     window.open(whatsAppLink(shareText(match), match.captainPhone), '_blank');
   });
 }
@@ -226,7 +276,7 @@ function createMatch() {
     captainName,
     captainPhone,
     required: requiredPlayers(sport),
-    players: [],
+    players: [{ id: uid(), name: captainName, phone: captainPhone, role: 'capitao', joinedAt: new Date().toISOString() }],
     createdAt: new Date().toISOString(),
   };
   state.matches.push(match);
@@ -238,7 +288,9 @@ function createMatch() {
 
 function findMatch(token = '') {
   const clean = String(token || '').trim().replace(/^.*partida=/, '').replace(/^.*token=/, '').replace(/^#/, '');
-  return state.matches.find((match) => match.token === clean || match.id === clean) || null;
+  const match = state.matches.find((item) => item.token === clean || item.id === clean) || null;
+  if (match) normalizeMatch(match);
+  return match;
 }
 
 function openMatchFromToken(tokenInput) {
@@ -253,9 +305,8 @@ function openMatchFromToken(tokenInput) {
 function renderInvite() {
   const match = state.matches.find((item) => item.id === currentMatchId);
   if (!match) return showScreen('login');
-  const arena = state.arenas.find((item) => item.id === match.arenaId);
-  const sport = arena?.sports?.find((item) => item.id === match.sportId);
-  const court = arena?.courts?.find((item) => item.id === match.courtId);
+  normalizeMatch(match);
+  const { arena, sport, court } = matchRefs(match);
   $('invite-status').textContent = match.players.length >= match.required ? 'Partida fechada' : 'Convocação aberta';
   $('invite-sport').textContent = sport?.name || 'Partida';
   $('invite-arena').textContent = `${arena?.name || 'Arena'} · ${court?.name || 'Quadra'}`;
@@ -267,7 +318,10 @@ function renderInvite() {
   $('invite-progress').style.width = `${Math.min((match.players.length / Math.max(match.required, 1)) * 100, 100)}%`;
   const roster = $('invite-roster');
   roster.innerHTML = match.players.length ? '' : '<div class="player-card"><span>Ninguém confirmado ainda.</span></div>';
-  match.players.forEach((player, index) => roster.insertAdjacentHTML('beforeend', `<div class="player-card"><b>${index + 1}. ${player.name}</b><span>${player.phone || ''}</span></div>`));
+  match.players.forEach((player, index) => {
+    const role = player.role === 'capitao' ? 'Capitão · confirmado' : 'Player confirmado';
+    roster.insertAdjacentHTML('beforeend', `<div class="player-card"><b>${index + 1}. ${player.name}</b><span>${role}${player.phone ? ` · ${player.phone}` : ''}</span></div>`);
+  });
 }
 
 function joinMatch() {
@@ -275,10 +329,11 @@ function joinMatch() {
   const name = $('join-name').value.trim();
   const phone = cleanPhone($('join-phone').value);
   if (!match) return toast('Abra uma convocação primeiro.');
+  normalizeMatch(match);
   if (!name || phone.length < 10) return toast('Informe seu nome e WhatsApp.');
-  if (match.players.some((player) => player.phone === phone)) return toast('Esse WhatsApp já confirmou presença.');
+  if (match.players.some((player) => cleanPhone(player.phone) === phone)) return toast('Esse WhatsApp já confirmou presença.');
   if (match.players.length >= match.required) return toast('A partida já está completa.');
-  match.players.push({ id: uid(), name, phone, joinedAt: new Date().toISOString() });
+  match.players.push({ id: uid(), name, phone, role: 'player', joinedAt: new Date().toISOString() });
   save(state);
   $('join-name').value = '';
   $('join-phone').value = '';
@@ -289,6 +344,7 @@ function joinMatch() {
 async function shareCurrentMatch() {
   const match = state.matches.find((item) => item.id === currentMatchId);
   if (!match) return toast('Abra uma convocação primeiro.');
+  normalizeMatch(match);
   const text = shareText(match);
   if (navigator.share) {
     try { await navigator.share({ text }); return; } catch (_) {}
@@ -299,6 +355,7 @@ async function shareCurrentMatch() {
 function shareCreatedMatch() {
   const match = state.matches.find((item) => item.id === currentMatchId);
   if (!match) return toast('Reserva não encontrada.');
+  normalizeMatch(match);
   window.open(whatsAppLink(shareText(match), match.captainPhone), '_blank');
 }
 
@@ -320,7 +377,7 @@ function initDeepLink() {
 
 function seedIfEmpty() {
   if (state.arenas.length) return;
-  const arena = { id: uid(), name: 'Arena São Paulo', phone: '51999999999', password: '1234', courts: [{ id: uid(), name: 'Quadra A' }], sports: [{ id: uid(), name: 'Futebol 7', playersPerTeam: 7, teams: 2, reservePercent: 30, duration: 90 }] };
+  const arena = { id: uid(), name: 'Zero', phone: '51999999999', password: '1234', courts: [{ id: uid(), name: 'Quadra A' }], sports: [{ id: uid(), name: 'Beach', playersPerTeam: 2, teams: 2, reservePercent: 50, duration: 60 }] };
   state.arenas.push(arena);
   save(state);
 }
@@ -329,4 +386,6 @@ window.ArenaApp = { showScreen, registerArena, loginArena, logout, addCourt, add
 
 document.querySelectorAll('.tab-btn').forEach((btn) => btn.addEventListener('click', () => setTabs(btn.dataset.tab)));
 seedIfEmpty();
+state.matches.forEach(normalizeMatch);
+save(state);
 if (!initDeepLink()) showScreen(state.session?.arenaId ? 'arena-dashboard' : 'login');
