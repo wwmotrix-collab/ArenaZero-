@@ -94,7 +94,12 @@
     </section>
 
     <section id="screen-invite" class="screen hidden invite-shell">
-      <div class="nav-strip"><button class="nav-btn on" id="invite-nav-lobby" onclick="ArenaApp.gotoInviteStep('lobby')">Convocação</button><button class="nav-btn" id="invite-nav-entry" onclick="ArenaApp.gotoInviteStep('entry')">Entrada</button><button class="nav-btn" id="invite-nav-done" onclick="ArenaApp.gotoInviteStep('done')">Confirmado</button></div>
+     <div class="nav-strip">
+  <img class="nav-logo" src="assets/logo-arena-zero.svg?v=az-logo-slogan-2" alt="Arena Zerø" />
+  <button class="nav-btn on" id="invite-nav-lobby" onclick="ArenaApp.gotoInviteStep('lobby')">Convocação</button>
+  <button class="nav-btn" id="invite-nav-entry" onclick="ArenaApp.gotoInviteStep('entry')">Entrada</button>
+  <button class="nav-btn" id="invite-nav-done" onclick="ArenaApp.gotoInviteStep('done')">Confirmado</button>
+     </div>
       <div id="invite-step-lobby" class="invite-step">
         <div class="invite-hero2"><div class="hero-badge2"><i></i><span id="invite-chip">Convocação</span></div><div class="hero-emblem2"><div></div><div></div><b id="invite-emoji">⚔️</b></div><h1 id="invite-sport">Partida</h1><p id="invite-arena">Arena · Quadra</p><small id="invite-date">Data</small></div><div class="hero-line"></div>
         <div class="hud-grid"><div class="hud-block"><span>Data</span><b id="hud-date">--</b></div><div class="hud-block"><span>Horário</span><b id="hud-time">--</b></div><div class="hud-block"><span>Quadra</span><b id="hud-court">--</b></div><div class="hud-block"><span>Duração</span><b id="hud-duration">--</b></div></div>
