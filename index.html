@@ -17,28 +17,21 @@
     <div class="atm"><div class="atm-grid"></div><div class="atm-glow1"></div><div class="atm-glow2"></div><div class="scanline"></div></div>
 
     <section id="screen-login" class="screen">
-      <div class="brand-block">
-        <img class="brand-logo home-logo" src="assets/logo-arena-zero.svg" alt="Arena Zerø" />
-      </div>
-
+      <div class="brand-block"><img class="brand-logo home-logo" src="assets/logo-arena-zero.svg" alt="Arena Zerø" /></div>
       <div class="panel login-panel">
+        <div id="config-alert" class="capacity-box hidden"></div>
         <div class="tab-switch">
           <button class="tab-btn active" data-tab="arena">🏟️ Sou Arena</button>
           <button class="tab-btn" data-tab="player">⚡ Sou Player</button>
         </div>
-
         <div id="tab-arena" class="tab-content">
-          <label>WhatsApp da arena</label>
-          <input id="arena-phone" type="tel" placeholder="(51) 99999-9999" inputmode="numeric" />
-          <label>Senha</label>
-          <input id="arena-password" type="password" placeholder="senha de acesso" />
+          <label>WhatsApp da arena</label><input id="arena-phone" type="tel" placeholder="(51) 99999-9999" inputmode="numeric" />
+          <label>Senha</label><input id="arena-password" type="password" placeholder="senha de acesso" />
           <button class="btn primary" onclick="ArenaApp.loginArena()">Entrar no painel</button>
           <button class="btn ghost" onclick="ArenaApp.showScreen('register-arena')">Criar arena</button>
         </div>
-
         <div id="tab-player" class="tab-content hidden">
-          <label>Código/link da partida</label>
-          <input id="player-token" type="text" placeholder="Cole o token ou abra o link recebido" />
+          <label>Código/link da partida</label><input id="player-token" type="text" placeholder="Cole o token ou abra o link recebido" />
           <button class="btn primary" onclick="ArenaApp.openMatchFromToken()">Abrir convocação</button>
           <p class="hint">O jogador normalmente entra pelo convite enviado no WhatsApp.</p>
         </div>
@@ -56,157 +49,67 @@
     </section>
 
     <section id="screen-arena-dashboard" class="screen hidden">
-      <div class="dash-header">
-        <div><div class="eyebrow">Painel da Arena</div><h2 id="arena-name-display">Arena</h2><p id="arena-phone-display"></p></div>
-        <button class="icon-btn" onclick="ArenaApp.logout()">Sair</button>
-      </div>
-
+      <div class="dash-header"><div><div class="eyebrow">Painel da Arena</div><h2 id="arena-name-display">Arena</h2><p id="arena-phone-display"></p></div><button class="icon-btn" onclick="ArenaApp.logout()">Sair</button></div>
       <div class="metrics">
         <div class="metric"><span>Partidas abertas</span><strong id="metric-open">0</strong></div>
         <div class="metric"><span>Quadras</span><strong id="metric-courts">0</strong></div>
         <div class="metric"><span>Esportes</span><strong id="metric-sports">0</strong></div>
       </div>
-
-      <div class="quick-grid">
+      <div class="quick-grid dashboard-grid">
         <button class="quick primary" onclick="ArenaApp.showCreateMatch()">➕ Criar partida</button>
         <button class="quick" onclick="ArenaApp.showScreen('settings')">⚙️ Quadras e esportes</button>
+        <button class="quick" onclick="ArenaApp.showRanking()">🏆 Ranking</button>
       </div>
-
-      <div class="section-title">Partidas/reservas</div>
-      <div id="matches-list" class="list"></div>
+      <div class="section-title">Partidas/reservas</div><div id="matches-list" class="list"></div>
     </section>
 
     <section id="screen-settings" class="screen hidden">
       <div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Configuração</h2><span></span></div>
       <div class="panel form-panel">
-        <h3>Quadras</h3>
-        <div class="inline-form"><input id="court-name" placeholder="Quadra A" /><button onclick="ArenaApp.addCourt()">Adicionar</button></div>
-        <div id="courts-list" class="chip-list"></div>
-        <hr />
-        <h3>Esportes</h3>
-        <label>Nome</label><input id="sport-name" placeholder="Futebol 7" />
+        <h3>Quadras</h3><div class="inline-form"><input id="court-name" placeholder="Quadra A" /><button onclick="ArenaApp.addCourt()">Adicionar</button></div><div id="courts-list" class="chip-list"></div><hr />
+        <h3>Esportes</h3><label>Nome</label><input id="sport-name" placeholder="Futebol 7" />
         <div class="form-grid">
-          <div><label>Players/time</label><input id="sport-ppt" type="number" value="7" /></div>
-          <div><label>Times</label><input id="sport-teams" type="number" value="2" /></div>
-          <div><label>Reservas %</label><input id="sport-reserve" type="number" value="30" /></div>
-          <div><label>Duração min</label><input id="sport-duration" type="number" value="90" /></div>
+          <div><label>Players/time</label><input id="sport-ppt" type="number" value="7" /></div><div><label>Times</label><input id="sport-teams" type="number" value="2" /></div>
+          <div><label>Reservas %</label><input id="sport-reserve" type="number" value="30" /></div><div><label>Duração min</label><input id="sport-duration" type="number" value="90" /></div>
         </div>
-        <button class="btn primary" onclick="ArenaApp.addSport()">Adicionar esporte</button>
-        <div id="sports-list" class="chip-list vertical"></div>
+        <button class="btn primary" onclick="ArenaApp.addSport()">Adicionar esporte</button><div id="sports-list" class="chip-list vertical"></div>
       </div>
     </section>
 
     <section id="screen-create-match" class="screen hidden">
       <div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Nova partida</h2><span></span></div>
       <div class="panel form-panel">
-        <p class="hint strong">Equivalente ao “lançar compra” do Pindura: a arena lança uma reserva paga e gera o convite para o capitão.</p>
+        <p class="hint strong">A arena lança a reserva, o capitão já entra confirmado e o WhatsApp abre automaticamente.</p>
         <label>Capitão / responsável</label><input id="match-captain-name" placeholder="Nome do capitão" />
         <label>WhatsApp do capitão</label><input id="match-captain-phone" type="tel" placeholder="(51) 99999-9999" />
-        <label>Data</label><input id="match-date" type="date" />
-        <label>Horário</label><input id="match-time" type="time" />
-        <label>Quadra</label><select id="match-court"></select>
-        <label>Esporte</label><select id="match-sport" onchange="ArenaApp.previewCapacity()"></select>
+        <label>Data</label><input id="match-date" type="date" /><label>Horário</label><input id="match-time" type="time" />
+        <label>Quadra</label><select id="match-court"></select><label>Esporte</label><select id="match-sport" onchange="ArenaApp.previewCapacity()"></select>
         <div class="capacity-box" id="capacity-preview">Selecione esporte para calcular vagas.</div>
-        <button class="btn primary" onclick="ArenaApp.createMatch()">Criar reserva e gerar convite</button>
+        <button class="btn primary" onclick="ArenaApp.createMatch()">Criar reserva e abrir WhatsApp</button>
       </div>
     </section>
 
     <section id="screen-invite" class="screen hidden invite-shell">
-      <div class="nav-strip">
-        <button class="nav-btn on" id="invite-nav-lobby" onclick="ArenaApp.gotoInviteStep('lobby')">Convocação</button>
-        <button class="nav-btn" id="invite-nav-entry" onclick="ArenaApp.gotoInviteStep('entry')">Entrada</button>
-        <button class="nav-btn" id="invite-nav-done" onclick="ArenaApp.gotoInviteStep('done')">Confirmado</button>
-      </div>
-
+      <div class="nav-strip"><button class="nav-btn on" id="invite-nav-lobby" onclick="ArenaApp.gotoInviteStep('lobby')">Convocação</button><button class="nav-btn" id="invite-nav-entry" onclick="ArenaApp.gotoInviteStep('entry')">Entrada</button><button class="nav-btn" id="invite-nav-done" onclick="ArenaApp.gotoInviteStep('done')">Confirmado</button></div>
       <div id="invite-step-lobby" class="invite-step">
-        <div class="invite-hero2">
-          <div class="hero-badge2"><i></i><span id="invite-chip">Convocação</span></div>
-          <div class="hero-emblem2"><div></div><div></div><b id="invite-emoji">⚔️</b></div>
-          <h1 id="invite-sport">Partida</h1>
-          <p id="invite-arena">Arena · Quadra</p>
-          <small id="invite-date">Data</small>
-        </div>
-        <div class="hero-line"></div>
-
-        <div class="hud-grid">
-          <div class="hud-block"><span>Data</span><b id="hud-date">--</b></div>
-          <div class="hud-block"><span>Horário</span><b id="hud-time">--</b></div>
-          <div class="hud-block"><span>Quadra</span><b id="hud-court">--</b></div>
-          <div class="hud-block"><span>Duração</span><b id="hud-duration">--</b></div>
-        </div>
-
+        <div class="invite-hero2"><div class="hero-badge2"><i></i><span id="invite-chip">Convocação</span></div><div class="hero-emblem2"><div></div><div></div><b id="invite-emoji">⚔️</b></div><h1 id="invite-sport">Partida</h1><p id="invite-arena">Arena · Quadra</p><small id="invite-date">Data</small></div><div class="hero-line"></div>
+        <div class="hud-grid"><div class="hud-block"><span>Data</span><b id="hud-date">--</b></div><div class="hud-block"><span>Horário</span><b id="hud-time">--</b></div><div class="hud-block"><span>Quadra</span><b id="hud-court">--</b></div><div class="hud-block"><span>Duração</span><b id="hud-duration">--</b></div></div>
         <button class="location-bar" onclick="ArenaApp.openMap()"><span>📍</span><b id="invite-map-label">Ver no mapa</b><em>›</em></button>
-
-        <div class="counter-focal" id="counter-focal">
-          <div class="cf-top"><i id="cf-dot"></i><span id="invite-status">Partida em formação</span></div>
-          <div class="cf-big"><strong id="invite-count">0</strong><small>/</small><b id="invite-required">0</b></div>
-          <p id="invite-lacking">jogadores confirmados</p>
-        </div>
-
-        <div class="prog-wrap">
-          <div class="prog-meta"><span id="prog-label">Faltam jogadores</span><b id="prog-pct">0%</b></div>
-          <div class="prog-track"><div id="invite-progress" class="prog-fill"></div><i id="prog-goal"></i></div>
-        </div>
-
-        <div id="mini-slots" class="mini-slots"></div>
-
-        <div class="cta-zone"><button class="btn-cta active-cta" id="btn-open-entry" onclick="ArenaApp.gotoInviteStep('entry')">⚡ Entrar na partida</button></div>
-        <button class="share-row" onclick="ArenaApp.shareCurrentMatch()"><span>📲</span><b>Compartilhar convocação</b></button>
-
-        <div class="slots-section">
-          <div class="slots-sec-lbl">Formação de times</div>
-          <div class="teams-row">
-            <div><div class="team-hdr t1-hdr">Time 1 <span id="team1-count">0/0</span></div><div id="team1-slots"></div></div>
-            <div><div class="team-hdr t2-hdr">Time 2 <span id="team2-count">0/0</span></div><div id="team2-slots"></div></div>
-          </div>
-        </div>
-        <div class="reserve-sec"><div class="slots-sec-lbl">Reservas</div><div id="reserve-slots"></div></div>
+        <div class="counter-focal" id="counter-focal"><div class="cf-top"><i id="cf-dot"></i><span id="invite-status">Partida em formação</span></div><div class="cf-big"><strong id="invite-count">0</strong><small>/</small><b id="invite-required">0</b></div><p id="invite-lacking">jogadores confirmados</p></div>
+        <div class="prog-wrap"><div class="prog-meta"><span id="prog-label">Faltam jogadores</span><b id="prog-pct">0%</b></div><div class="prog-track"><div id="invite-progress" class="prog-fill"></div><i id="prog-goal"></i></div></div>
+        <div id="mini-slots" class="mini-slots"></div><div class="cta-zone"><button class="btn-cta active-cta" id="btn-open-entry" onclick="ArenaApp.gotoInviteStep('entry')">⚡ Entrar na partida</button></div><button class="share-row" onclick="ArenaApp.shareCurrentMatch()"><span>📲</span><b>Compartilhar convocação</b></button>
+        <div class="slots-section"><div class="slots-sec-lbl">Formação de times</div><div class="teams-row"><div><div class="team-hdr t1-hdr">Time 1 <span id="team1-count">0/0</span></div><div id="team1-slots"></div></div><div><div class="team-hdr t2-hdr">Time 2 <span id="team2-count">0/0</span></div><div id="team2-slots"></div></div></div></div><div class="reserve-sec"><div class="slots-sec-lbl">Reservas</div><div id="reserve-slots"></div></div>
       </div>
-
-      <div id="invite-step-entry" class="invite-step hidden">
-        <div class="entrada-top">
-          <div class="entrada-eye" id="entry-eye">Arena Zerø</div>
-          <h2>Você foi<br><em>convocado</em></h2>
-          <p>Confirme sua presença para garantir sua vaga</p>
-        </div>
-        <div class="sport-mini"><span id="entry-emoji">⚔️</span><div><b id="entry-sport">Partida</b><small id="entry-meta">Arena Zerø</small></div></div>
-        <div class="form-body" id="join-panel">
-          <label>Seu nome de jogador</label><input id="join-name" type="text" placeholder="Como te chamam em campo" oninput="ArenaApp.checkJoinForm()" />
-          <label>WhatsApp</label><input id="join-phone" type="tel" placeholder="(51) 99999-9999" oninput="ArenaApp.checkJoinForm()" />
-          <button class="btn-confirm" id="btn-confirm-join" onclick="ArenaApp.joinMatch()" disabled>🛡️ Confirmar presença</button>
-          <button class="btn-back" onclick="ArenaApp.gotoInviteStep('lobby')">Voltar ao lobby</button>
-        </div>
-      </div>
-
-      <div id="invite-step-done" class="invite-step hidden">
-        <div class="confirmed-top">
-          <div class="confirmed-shield" id="confirmed-shield">⚡</div>
-          <div class="confirmed-tag" id="confirmed-tag">TIME 1</div>
-          <h2 id="confirmed-title">Vaga garantida</h2>
-          <p id="confirmed-sub">Você entrou na partida.</p>
-        </div>
-        <div class="confirmed-event"><b id="confirmed-event-name">Partida</b><span id="confirmed-event-meta">Arena Zerø</span></div>
-        <div class="prog-wrap"><div class="prog-meta"><span id="done-prog-label">Confirmados</span><b id="done-prog-pct">0%</b></div><div class="prog-track"><div id="done-progress" class="prog-fill"></div></div></div>
-        <div id="done-mini-slots" class="mini-slots"></div>
-        <button class="s3-share" onclick="ArenaApp.shareCurrentMatch()">📲 Compartilhar convocação</button>
-        <button class="btn-back" onclick="ArenaApp.gotoInviteStep('lobby')">← Voltar ao lobby</button>
-      </div>
+      <div id="invite-step-entry" class="invite-step hidden"><div class="entrada-top"><div class="entrada-eye" id="entry-eye">Arena Zerø</div><h2>Você foi<br><em>convocado</em></h2><p>Confirme sua presença para garantir sua vaga</p></div><div class="sport-mini"><span id="entry-emoji">⚔️</span><div><b id="entry-sport">Partida</b><small id="entry-meta">Arena Zerø</small></div></div><div class="form-body" id="join-panel"><label>Seu nome de jogador</label><input id="join-name" type="text" placeholder="Como te chamam em campo" oninput="ArenaApp.checkJoinForm()" /><label>WhatsApp</label><input id="join-phone" type="tel" placeholder="(51) 99999-9999" oninput="ArenaApp.checkJoinForm()" /><label>Escolha seu lado</label><div class="team-choice"><button id="choice-auto" class="choice active" onclick="ArenaApp.selectTeam('auto')">Automático</button><button id="choice-team1" class="choice" onclick="ArenaApp.selectTeam('team1')">Time 1</button><button id="choice-team2" class="choice" onclick="ArenaApp.selectTeam('team2')">Time 2</button></div><button class="btn-confirm" id="btn-confirm-join" onclick="ArenaApp.joinMatch()" disabled>🛡️ Confirmar presença</button><button class="btn-back" onclick="ArenaApp.gotoInviteStep('lobby')">Voltar ao lobby</button></div></div>
+      <div id="invite-step-done" class="invite-step hidden"><div class="confirmed-top"><div class="confirmed-shield" id="confirmed-shield">⚡</div><div class="confirmed-tag" id="confirmed-tag">TIME 1</div><h2 id="confirmed-title">Vaga garantida</h2><p id="confirmed-sub">Você entrou na partida.</p></div><div class="confirmed-event"><b id="confirmed-event-name">Partida</b><span id="confirmed-event-meta">Arena Zerø</span></div><div class="prog-wrap"><div class="prog-meta"><span id="done-prog-label">Confirmados</span><b id="done-prog-pct">0%</b></div><div class="prog-track"><div id="done-progress" class="prog-fill"></div></div></div><div id="done-mini-slots" class="mini-slots"></div><button class="s3-share" onclick="ArenaApp.shareCurrentMatch()">📲 Compartilhar convocação</button><button class="btn-back" onclick="ArenaApp.gotoInviteStep('lobby')">← Voltar ao lobby</button></div>
     </section>
 
-    <section id="screen-created" class="screen hidden">
-      <div class="success-card">
-        <div class="success-icon">✅</div>
-        <h1>Reserva criada</h1>
-        <p>Capitão já confirmado. Envie a convocação para ele espalhar no WhatsApp.</p>
-        <textarea id="created-share-text" readonly></textarea>
-        <button class="btn primary" onclick="ArenaApp.shareCreatedMatch()">Abrir WhatsApp</button>
-        <button class="btn ghost" onclick="ArenaApp.showScreen('arena-dashboard')">Voltar ao painel</button>
-      </div>
-    </section>
+    <section id="screen-result" class="screen hidden"><div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Resultado</h2><span></span></div><div class="panel form-panel"><div id="result-match-info" class="capacity-box">Selecione uma partida.</div><div class="form-grid"><div><label>Placar Time 1</label><input id="result-team1" type="number" min="0" value="0"></div><div><label>Placar Time 2</label><input id="result-team2" type="number" min="0" value="0"></div></div><label>Melhor jogador</label><select id="result-best-player"></select><button class="btn primary" onclick="ArenaApp.saveResult()">Salvar resultado, XP e MMR</button><div id="result-preview" class="chip-list vertical"></div></div></section>
+
+    <section id="screen-ranking" class="screen hidden"><div class="topbar"><button onclick="ArenaApp.showScreen('arena-dashboard')">←</button><h2>Ranking</h2><span></span></div><div class="panel form-panel"><label>Filtro por esporte</label><select id="ranking-sport" onchange="ArenaApp.renderRanking()"><option value="all">Todos</option></select><div id="ranking-list" class="ranking-list"></div></div></section>
 
     <div id="toast" class="toast hidden"></div>
   </div>
-
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
