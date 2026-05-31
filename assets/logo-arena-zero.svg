@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Arena Zerø">
+  <defs>
+    <linearGradient id="g" x1="80" y1="70" x2="430" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#caff00"/>
+      <stop offset="0.55" stop-color="#9dff00"/>
+      <stop offset="1" stop-color="#31c46b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#f8f8f3"/>
+  <g fill="none" stroke="url(#g)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="256" cy="150" rx="132" ry="50" transform="rotate(-28 256 150)"/>
+    <ellipse cx="256" cy="150" rx="132" ry="50" transform="rotate(-62 256 150)"/>
+    <path d="M118 184c64 30 191 24 278-38"/>
+    <path d="M393 181l-28 58 58-12-46 78"/>
+  </g>
+  <text x="256" y="318" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="600" fill="#535353" letter-spacing="2">ARENA</text>
+  <text x="256" y="392" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="500" fill="#535353" letter-spacing="20">ZERØ</text>
+  <text x="256" y="430" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600" fill="#8c8c8c" letter-spacing="2">AGENDA · RANKING · PAGAMENTOS · SOCIAL</text>
+</svg>
