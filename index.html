@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#06060e" />
-  <title>Arena Zero</title>
+  <meta name="theme-color" content="#101014" />
+  <title>Arena Zerø</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,9 @@
 
     <section id="screen-login" class="screen">
       <div class="brand-block">
-        <div class="brand-mark">AZ</div>
-        <div class="eyebrow">Motor Pindura adaptado</div>
-        <h1>Arena Zero</h1>
+        <img class="brand-logo" src="assets/logo-arena-zero.svg" alt="Arena Zerø" />
+        <div class="eyebrow">Agenda · Ranking · Pagamentos · Social</div>
+        <h1>Arena Zerø</h1>
         <p>Reserva vira convocação. Convocação vira partida. Partida vira XP.</p>
       </div>
 
@@ -115,6 +115,7 @@
 
     <section id="screen-invite" class="screen hidden">
       <div class="hero invite-hero">
+        <img class="invite-logo" src="assets/logo-arena-zero.svg" alt="Arena Zerø" />
         <div class="hero-badge"><span id="invite-status-dot"></span><b id="invite-status">Convocação aberta</b></div>
         <div class="emblem">⚔️</div>
         <h1 id="invite-sport">Partida</h1>
@@ -141,7 +142,7 @@
       <div class="success-card">
         <div class="success-icon">✅</div>
         <h1>Reserva criada</h1>
-        <p>Envie este convite para o capitão espalhar no WhatsApp.</p>
+        <p>Capitão já confirmado. Envie a convocação para ele espalhar no WhatsApp.</p>
         <textarea id="created-share-text" readonly></textarea>
         <button class="btn primary" onclick="ArenaApp.shareCreatedMatch()">Abrir WhatsApp</button>
         <button class="btn ghost" onclick="ArenaApp.showScreen('arena-dashboard')">Voltar ao painel</button>
