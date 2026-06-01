@@ -283,6 +283,7 @@ async function render() {
   if (!(await loadData())) return;
   root.innerHTML = `${renderControls()}${renderSummary()}${renderCalendar()}${renderAgendaByCourt()}${renderGroups()}<div class="azbox"><h3 class="aztitle">Insights da IA</h3><div class="azempty">Aguardando histórico suficiente para gerar insights de ocupação, risco de partida e XP/MMR.</div></div>`;
   wire();
+  
 }
 
 function install() {
