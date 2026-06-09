@@ -1,0 +1,55 @@
+{
+  "agent": "arena-zero-reservation-manager",
+  "version": "1.0.0-draft",
+  "scope": "automacao-reservas",
+  "project": "Arena Zerø",
+  "primaryPrompt": "tools/picoclaw/prompts/modulo-reservas.md",
+  "ownedFlows": [
+    "pagina_publica_arena",
+    "selecao_esporte",
+    "calendario_reservas",
+    "periodos_dia",
+    "slots_quadra",
+    "hold_temporario",
+    "confirmacao_reserva",
+    "reserva_para_partida",
+    "convocacao_whatsapp",
+    "utm_source_tracking"
+  ],
+  "repositoryTargets": {
+    "frontend": [
+      "index.html",
+      "js/app.js",
+      "js/reservation-engine.js",
+      "js/public-arena-booking.js",
+      "css/main.css",
+      "css/overrides.css"
+    ],
+    "docs": [
+      "docs/modulo-automacao-reservas.md"
+    ]
+  },
+  "firestoreCollections": {
+    "arenas": "perfil publico, horarios, quadras, esportes e politicas",
+    "reservations": "reservas, holds, pagamentos, expiracoes e origem",
+    "matches": "partidas criadas a partir de reservas confirmadas",
+    "players": "capitao e jogadores convidados"
+  },
+  "rules": {
+    "showScheduleBeforeSignup": true,
+    "defaultHoldMinutes": 10,
+    "minimalCustomerFields": ["name", "phone"],
+    "source": "public_arena_page",
+    "matchSource": "reservation_automation"
+  },
+  "acceptanceTests": [
+    "cliente visualiza horarios sem cadastro obrigatorio",
+    "slots disponiveis sao gerados por quadra e esporte",
+    "horarios ocupados aparecem indisponiveis",
+    "cliente consegue segurar slot por tempo limitado",
+    "hold expirado libera horario",
+    "reserva confirmada cria partida",
+    "partida criada gera link de convocacao",
+    "utm_source e origem sao preservados"
+  ]
+}
