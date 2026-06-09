@@ -196,6 +196,221 @@
   color: rgba(255,255,255,.72);
 }
 
+.postgame-result-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: end center;
+  padding: 14px;
+  background: rgba(0,0,0,.52);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+
+.postgame-result-modal.visible {
+  opacity: 1;
+}
+
+.postgame-result-modal.hidden {
+  display: none;
+}
+
+.pgr-card {
+  width: min(100%, 460px);
+  max-height: calc(100vh - 28px);
+  overflow: auto;
+  position: relative;
+  border-radius: 26px;
+  padding: 18px;
+  background: linear-gradient(145deg, rgba(15,15,19,.98), rgba(28,31,25,.96));
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 26px 80px rgba(0,0,0,.56), 0 0 40px rgba(160,255,91,.16);
+}
+
+.pgr-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.82);
+  font-size: 1.35rem;
+}
+
+.pgr-kicker {
+  color: var(--green);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.pgr-card h3 {
+  margin: 0 38px 6px 0;
+  font-size: 1.55rem;
+  line-height: 1.05;
+}
+
+.pgr-card p {
+  margin: 0 0 14px;
+  color: rgba(255,255,255,.68);
+  line-height: 1.35;
+}
+
+.pgr-label,
+.pgr-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 7px;
+  color: rgba(255,255,255,.78);
+  font-weight: 900;
+  font-size: .86rem;
+}
+
+.pgr-label-row small {
+  color: rgba(255,255,255,.42);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.pgr-input,
+.pgr-score,
+.pgr-note {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  padding: 13px 12px;
+  outline: none;
+  font-weight: 800;
+}
+
+.pgr-score-grid {
+  display: grid;
+  grid-template-columns: 1fr 34px 1fr;
+  gap: 10px;
+  align-items: end;
+  margin: 12px 0;
+}
+
+.pgr-score-grid label {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255,255,255,.64);
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.pgr-score-grid strong {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  color: var(--green);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.25rem;
+}
+
+.pgr-score {
+  text-align: center;
+  font-size: 1.4rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.pgr-players {
+  display: grid;
+  gap: 8px;
+  max-height: 210px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.pgr-player {
+  display: grid;
+  grid-template-columns: 42px 1fr 34px;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  padding: 9px;
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.8);
+  text-align: left;
+}
+
+.pgr-player b {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.1);
+  color: var(--green);
+}
+
+.pgr-player span {
+  font-weight: 900;
+}
+
+.pgr-player em {
+  justify-self: end;
+  font-style: normal;
+  color: rgba(255,255,255,.5);
+  font-weight: 900;
+}
+
+.pgr-player.selected {
+  border-color: var(--green);
+  background: rgba(160,255,91,.14);
+  box-shadow: 0 0 22px rgba(160,255,91,.12);
+}
+
+.pgr-empty {
+  color: rgba(255,255,255,.54);
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.06);
+}
+
+.pgr-note {
+  min-height: 74px;
+  resize: vertical;
+  margin-top: 12px;
+  font-weight: 700;
+}
+
+.pgr-actions {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pgr-primary,
+.pgr-secondary {
+  border: 0;
+  border-radius: 15px;
+  padding: 13px 10px;
+  font-weight: 900;
+}
+
+.pgr-primary {
+  background: linear-gradient(135deg, var(--green), var(--cyan));
+  color: #06120a;
+}
+
+.pgr-secondary {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.72);
+}
+
 @media(max-width:560px) {
   .home-logo {
     width: min(78vw, 300px);
@@ -219,7 +434,8 @@
     inset: auto 10px 10px 10px;
   }
 
-  .pel-actions {
+  .pel-actions,
+  .pgr-actions {
     grid-template-columns: 1fr;
   }
 }
