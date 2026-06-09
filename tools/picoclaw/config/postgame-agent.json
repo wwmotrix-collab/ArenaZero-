@@ -1,0 +1,64 @@
+{
+  "agent": "arena-zero-postgame-manager",
+  "version": "1.0.0",
+  "scope": "gestao-pos-jogo",
+  "project": "Arena Zerø",
+  "primaryPrompt": "tools/picoclaw/prompts/pos-jogo-arena-zero.md",
+  "ownedFlows": [
+    "coleta_placar",
+    "melhor_jogador",
+    "xp_visivel",
+    "mmr_oculto",
+    "ranking_geral",
+    "ranking_por_esporte",
+    "anti_abuso",
+    "resumo_pos_jogo"
+  ],
+  "repositoryTargets": {
+    "frontend": [
+      "index.html",
+      "js/app.js",
+      "js/postgame-engine.js",
+      "css/main.css",
+      "css/overrides.css"
+    ],
+    "docs": [
+      "docs/pos-jogo-xp-mmr.md"
+    ]
+  },
+  "firestoreCollections": {
+    "players": "jogadores, XP, MMR e estatisticas por esporte",
+    "matches": "partidas, resultado, snapshots e status finalizada",
+    "arenas": "configuracoes de esportes, quadras e regras locais"
+  },
+  "rules": {
+    "xp": {
+      "win": 10,
+      "loss": 6,
+      "draw": 8,
+      "captainBonus": 2,
+      "bestPlayerBonusFormula": "Math.round(4 + Math.log1p(previousBestPlayerCount) * 2)"
+    },
+    "mmr": {
+      "initial": 1000,
+      "kFactor": 32,
+      "formula": "current + K * (score - expected)",
+      "expectedFormula": "1 / (1 + 10 ** ((opponentAvg - ownAvg) / 400))"
+    },
+    "antiAbuse": {
+      "sameDaySameSportOverlap70Percent": 0.5,
+      "twoOrMoreRepeatedMatches": 0.2,
+      "belowMinimumPlayers": 0
+    }
+  },
+  "acceptanceTests": [
+    "partida finalizada uma vez nao reaplica XP/MMR",
+    "vitoria gera 10 XP base antes de bonus/redutores",
+    "derrota gera 6 XP base antes de bonus/redutores",
+    "empate gera 8 XP base antes de bonus/redutores",
+    "melhor jogador recebe bonus logaritmico",
+    "ranking geral ordena por XP com MMR como desempate",
+    "ranking por esporte usa statsBySport",
+    "resultado salva antiAbuseFactor e versoes de regra"
+  ]
+}
