@@ -1,0 +1,60 @@
+{
+  "agent": "arena-zero-tournament-manager",
+  "version": "1.0.0-draft",
+  "scope": "modulo-torneios",
+  "project": "Arena Zerø",
+  "primaryPrompt": "tools/picoclaw/prompts/modulo-torneios.md",
+  "ownedFlows": [
+    "criacao_torneio",
+    "participantes",
+    "chaveamento",
+    "mata_mata_simples",
+    "byes_automaticos",
+    "agenda_quadras",
+    "pagina_publica",
+    "resultado_avanca_chave",
+    "integracao_pos_jogo"
+  ],
+  "repositoryTargets": {
+    "frontend": [
+      "index.html",
+      "js/app.js",
+      "js/tournament-engine.js",
+      "css/main.css",
+      "css/overrides.css"
+    ],
+    "docs": [
+      "docs/modulo-torneios.md"
+    ]
+  },
+  "firestoreCollections": {
+    "tournaments": "torneios, participantes, chaveamento, agenda e pagina publica",
+    "matches": "partidas geradas pelo torneio com tournamentId e context tournament",
+    "players": "jogadores usados em participantes, XP/MMR e badges",
+    "arenas": "quadras, esportes e configuracoes locais"
+  },
+  "rules": {
+    "initialModel": "single_elimination",
+    "antiAbuseException": "match.context === 'tournament'",
+    "statusFlow": [
+      "rascunho",
+      "publicado",
+      "em_andamento",
+      "finalizado",
+      "cancelado"
+    ],
+    "publicRoute": "/torneio/{publicToken}",
+    "matchContext": "tournament"
+  },
+  "acceptanceTests": [
+    "torneio pode ser criado em rascunho",
+    "participantes podem ser adicionados manualmente",
+    "mata-mata simples gera confrontos",
+    "numero nao potencia de 2 gera byes",
+    "agenda usa quadras, duracao e intervalo",
+    "partidas geradas possuem tournamentId e context tournament",
+    "resultado de partida avanca vencedor",
+    "final define campeao",
+    "pagina publica exibe chaves, agenda e resultados"
+  ]
+}
