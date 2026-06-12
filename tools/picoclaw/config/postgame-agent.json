@@ -1,9 +1,10 @@
 {
   "agent": "arena-zero-postgame-manager",
-  "version": "1.0.0",
+  "version": "1.1.0-phase-2",
   "scope": "gestao-pos-jogo",
   "project": "Arena Zerø",
   "primaryPrompt": "tools/picoclaw/prompts/pos-jogo-arena-zero.md",
+  "phase2Prompt": "tools/picoclaw/prompts/fase-2-pos-jogo.md",
   "ownedFlows": [
     "coleta_placar",
     "melhor_jogador",
@@ -12,24 +13,51 @@
     "ranking_geral",
     "ranking_por_esporte",
     "anti_abuso",
-    "resumo_pos_jogo"
+    "resumo_pos_jogo",
+    "deteccao_fim_estimado",
+    "xp_pendente",
+    "postgame_tasks",
+    "consenso_social",
+    "player_evolution_layer"
   ],
   "repositoryTargets": {
     "frontend": [
       "index.html",
       "js/app.js",
       "js/postgame-engine.js",
+      "js/postgame-tasks.js",
+      "js/player-evolution-layer.js",
       "css/main.css",
       "css/overrides.css"
     ],
+    "backend": [
+      "functions/picoclaw-postgame-orchestrator.js"
+    ],
     "docs": [
-      "docs/pos-jogo-xp-mmr.md"
+      "docs/pos-jogo-xp-mmr.md",
+      "docs/picoclaw-fase-2-pos-jogo.md",
+      "docs/pr-draft-gamificacao-pos-jogo.md"
     ]
   },
   "firestoreCollections": {
-    "players": "jogadores, XP, MMR e estatisticas por esporte",
-    "matches": "partidas, resultado, snapshots e status finalizada",
-    "arenas": "configuracoes de esportes, quadras e regras locais"
+    "players": "jogadores, XP, MMR, perfil, badges, streaks e estatisticas por esporte",
+    "matches": "partidas, status, resultado, snapshots e controle de finalizacao",
+    "arenas": "configuracoes de esportes, quadras e regras locais",
+    "postgameTasks": "pendencias de resultado por jogador com XP travado ate consenso ou validacao"
+  },
+  "phase2": {
+    "orchestrator": "picoclaw-postgame-orchestrator",
+    "triggerFormula": "match.date + match.time + sport.duration + toleranceMinutes",
+    "toleranceMinutes": 10,
+    "scheduleCadenceMinutes": 10,
+    "sourceStatuses": [
+      "em_andamento",
+      "aguardando_resultado"
+    ],
+    "targetStatusWhenDue": "aguardando_resultado",
+    "taskCollection": "postgameTasks",
+    "xpLockedUntil": "resultado_finalizado_por_consenso_ou_arena",
+    "playerMessage": "XP pendente no lobby. Confirme o resultado da partida."
   },
   "rules": {
     "xp": {
@@ -53,6 +81,12 @@
   },
   "acceptanceTests": [
     "partida finalizada uma vez nao reaplica XP/MMR",
+    "partida vencida por tempo gera postgameTasks para titulares",
+    "perfil do player mostra XP pendente quando houver task aberta",
+    "player consegue responder placar sugerido",
+    "respostas iguais geram consenso social",
+    "respostas divergentes enviam para validacao da arena",
+    "XP/MMR ficam bloqueados ate finalizacao real",
     "vitoria gera 10 XP base antes de bonus/redutores",
     "derrota gera 6 XP base antes de bonus/redutores",
     "empate gera 8 XP base antes de bonus/redutores",
